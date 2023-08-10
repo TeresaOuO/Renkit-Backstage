@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Share Drinks</title>
+
+    <!-- RWD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="vendor/bootstrap/4.2.1/css/bootstrap.min.css">
+    <!-- css -->
+    <link rel="stylesheet" href="css/all.css">
+
+
+</head>
+
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <span id="connect">_</span>
+            <div>
+                <h2><b>杯子</b></h2>
+                <label id="CUPsearch">查詢最新杯子</label>
+                <label id="newcup" style="color: red;"></label><br>
+                <h4>使用中杯子</h4>
+                <h4>未使用杯子</h4>
+            </div>
+            <div>
+                <h2><b>店家</b></h2>
+                <label for="Sname">店家名稱:</label>
+                <input type="text" id="Sname" name="Sname"><br><br>
+                <label for="Scontent">店家介紹:</label>
+                <input type="text" id="Scontent" name="Scontent"><br><br>
+                <label for="Slongitude">經度:</label>
+                <input type="text" id="Slongitude" name="Slongitude"><br><br>
+                <label for="Slatitude">緯度:</label>
+                <input type="text" id="Slatitude" name="Slatitude"><br><br>
+                <input type="submit" id="Supdate" value="增加">
+                <label id="message1" style="color: red;"></label><br>
+            </div>
+            <div>
+                <h2><b>優惠券</b></h2>
+                <label for="Cname">名稱:</label>
+                <input type="text" id="Cname" name="Cname"><br><br>
+                <!--<label for="Ccomment">內容:</label>
+                <input type="text" id="Ccomment" name="Ccomment"><br><br>-->
+                <label for="Ccontent">優惠:</label>
+                <input type="text" id="Ccontent" name="Ccontent" value="折抵元"><br><br>
+                <label for="Cpoint">點數:</label>
+                <input type="text" id="Cpoint" name="Cpoint">
+                <input type="submit" id="Cupdate" value="增加">
+                <label id="message" style="color: red;"></label><br>
+            </div>
+            <br><br><br>
+
+        </div>
+
+
+        <div id="footer">
+            <!--data-role="footer" data-theme="b"-->
+            <span class="cr">
+                Copyright@2020 Share-Drinks
+            </span>
+        </div>
+
+    </form>
+
+
+
+    <!-- bootstrap JQ+JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js "></script>
+    <script src="vendor/bootstrap/4.2.1/js/bootstrap.bundle.min.js "></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase.js"></script>
+    <!--少打-app-->
+    <script src="https://www.w3schools.com/lib/w3color.js"></script>
+    <script>
+        window.addEventListener("load", function () { //when page loads
+            initFirebaseModule();//firebase更動
+            initCoupon();//優惠券
+            initNewCup();
+            initStore();
+            showMember();
+        });
+
+        function updatefirebase_Coupon(cname, ccontent, cpoint) {
+            console.log(cpoint)
+            //int p=cpoint;case 'led2': ref_Leds.update({ Led02: num }); break;
+
+            var Uname = cname.toString();
+            var Ucontent = ccontent.toString();
+            //var  Upoint=Convert.ToInt32(cpoint);
+            var Upoint = cpoint.toString();
+
+            ref_Coupon.push({ 'name': Uname, 'content': ccontent, 'point': cpoint });
+
+            document.getElementById("connect").innerHTML = 'connect success';
+        }
+        function updatefirebase_Sore(sname, scontent, slong, slat) {
+            console.log(slat)
+            ref_Store.push({ 'name': sname, 'description': scontent, 'latitude': slat, 'longitude': slong, 'cup_num': 0, 'picture': '' });
+        }
+        function showMember() {
+            var returnArray = [];
+            ref_Cup.on('value', (snapshot) => {
+                snapshot.forEach((child) => {
+                    returnArray.push({
+                        User: child.val().UserId,
+                        Frequency: child.val().UseTimes,
+                        Store: child.val().CurrentStore,
+                    })
+                })
+                console.log(returnArray)
+                //console.log(returnArray[0]['email'])
+            });
+            return returnArray;
+        }
+
+        function find() {
+            console.log("hel")
+            ref_Cup.orderByChild("UseTimes").equalTo(10).on("child_added", function (snapshot) {
+                console.log(snapshot.key);
+                document.getElementById("newcup").innerHTML = snapshot.key;
+            });
+
+        }
+        function initFirebaseModule() {
+
+            var config;
+            var db;
+            var Led01;
+            var Led02;
+            var door;
+            //________________________________________________________________________________________firebase
+            var firebaseConfig = {
+                apiKey: "AIzaSyBv0oSWnzmpjEHLokkslFLNXTzKi7RNU4g",
+                authDomain: "share-drink.firebaseapp.com",
+                databaseURL: "https://share-drink.firebaseio.com",
+                projectId: "share-drink",
+                storageBucket: "share-drink.appspot.com",
+                messagingSenderId: "14774934464",
+                appId: "1:14774934464:web:9b81562d29dfa1e66b0625",
+                measurementId: "G-JX77CQL7TN"
+            };
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+
+            //________________________________________________________________________________________firebase節點
+            ref_Store = db.ref('/Shops/');
+            ref_Coupon = db.ref('coupon');
+            ref_Cup = db.ref('cups');
+            ref_Mission = db.ref('/mission/');
+
+            //________________________________________________________________________________________firebase更改監聽
+
+        }
+
+        //____________________________________________________________________________________________網頁更改
+
+        function initStore() {
+            var store_btn = document.getElementById("Supdate").addEventListener("click", store_update);
+
+            function store_update() {
+
+                var sname = document.getElementById("Sname").value;
+                var scontent = document.getElementById("Scontent").value;
+                var slong = document.getElementById("Slongitude").value;
+                var slat = document.getElementById("Slatitude").value;
+
+                if (sname == "" || scontent == "" || slong == "" || slat == "") {
+                    console.log("未輸入");
+                    document.getElementById("message1").innerHTML = '未輸入完整！';
+                } else {
+                    updatefirebase_Sore(sname, scontent, slong, slat);
+                    sname = "";
+                    scontent = "";
+                    slong = "";
+                    slat = "";
+                    document.getElementById("Sname").value = "";
+                    document.getElementById("Scontent").value = "";
+                    document.getElementById("Slongitude").value = "";
+                    document.getElementById("Slatitude").value = "";
+                }
+                console.log(Sname);
+            }
+        }
+
+        function initCoupon() {
+            var coupon_btn = document.getElementById("Cupdate").addEventListener("click", coupon_update);
+
+            function coupon_update() {
+
+                var cname = document.getElementById("Cname").value;
+                var ccontent = document.getElementById("Ccontent").value;
+                var cpoint = document.getElementById("Cpoint").value;
+
+                if (cname == "" || ccontent == "" || cpoint == "") {
+                    console.log("未輸入");
+                    document.getElementById("message").innerHTML = '未輸入完整！';
+                } else {
+                    updatefirebase_Coupon(cname, ccontent, cpoint);
+                    cname = "";
+                    ccontent = "";
+                    cpoint = "";
+                    document.getElementById("Cname").value = "";
+                    document.getElementById("Ccontent").value = "折抵元";
+                    document.getElementById("Cpoint").value = "";
+                }
+                console.log(cname);
+            }
+        }
+        function initNewCup() {
+            var newcup_btn = document.getElementById("CUPsearch").addEventListener("click", cup_search);
+            function cup_search() {
+                find();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

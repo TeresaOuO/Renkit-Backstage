@@ -1,0 +1,124 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+* {
+  font-family: "Arial", "PingFang", "Microsoft JhengHei";
+}
+
+.d-grid {
+  display: -ms-grid;
+  display: grid;
+}
+
+.d-inline {
+  display: inline-block;
+}
+
+.d-none {
+  display: none;
+}
+
+.table {
+  background-color: white;
+  font-size: 12;
+  justify-items: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: "1";
+}
+
+.far {
+  margin-top: -8px;
+  margin-left: -15px;
+}
+
+.form-check {
+  margin-bottom: 3%;
+  margin-left: -4%;
+}
+
+.sidebar {
+  color: #e8e8e8;
+  background-color: #202c36;
+}
+
+.sidebar-heading {
+  font-size: 1.65rem !important;
+}
+
+.sidebar .list-group-item {
+  color: #e8e8e8;
+  background-color: #202c36;
+}
+
+.sidebar .list-group-item i {
+  margin-right: 10px;
+}
+
+.main-content {
+  padding: 30px;
+}
+
+.content-item {
+  margin-bottom: 20px;
+}
+
+.content-subtitle {
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 1rem;
+}
+/*# sourceMappingURL=all.css.map */

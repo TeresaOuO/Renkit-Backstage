@@ -1,0 +1,27 @@
+.sidebar {
+  &-heading {
+    font-size: 1.65rem !important;
+  }
+  color: #e8e8e8;
+  background-color: #202c36;
+  .list-group-item {
+    color: #e8e8e8;
+    background-color: #202c36;
+    i {
+      margin-right: 10px;
+    }
+  }
+}
+
+.main-content {
+  padding: 30px;
+}
+
+.content-item {
+  margin-bottom: 20px;
+}
+
+.content-subtitle {
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}

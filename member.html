@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>RENKiT</title>
+
+  <!-- RWD -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- bootstrap css -->
+  <link rel="stylesheet" href="vendor/bootstrap/4.2.1/css/bootstrap.min.css" />
+
+  <!-- font-awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+    integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous" />
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <!-- Custom styles for this template -->
+  <link href="css/simple-sidebar.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/all.css" />
+  <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase.js"></script>
+  <script type="text/javascript" src="js/firebase.js"></script>
+  <script>
+    window.addEventListener("load", function () { //when page loads
+      initFirebaseModule();//firebase更動
+      getArray();
+      initMember();
+      userChart();
+    });
+  </script>
+</head>
+
+<body class="wrapper d-grid">
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">Renkit 後台管理</div>
+      <div class="list-group list-group-flush">
+        <a href="member.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fa fa-user-circle" aria-hidden="true"></i>
+          <p>會員管理</p>
+          <i class="fas fa-angle-right btn" aria-hidden="true" style="color: cornsilk;
+          position:absolute;
+          right:0px;
+          margin-top: -2%;
+          "></i>
+        </a>
+        <a href="store.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fas fa-building" aria-hidden="true"></i>
+          <p>店家管理</p>
+        </a>
+        <a href="cup.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fas fa-coffee" aria-hidden="true" style="margin-left: -4px;"></i>
+          <p>租賃管理</p>
+        </a>
+        <a href="coupon.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fas fa-receipt" aria-hidden="true" style="margin-left: 1px" ;></i>
+          <p style="margin-left: 2px">優惠卷管理</p>
+        </a>
+        <a href="mission.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fas fa-briefcase" aria-hidden="true"></i>
+          <p>任務表管理</p>
+        </a>
+        <a href="distribution.html" class="list-group-item list-group-item-action d-flex">
+          <i class="fas fa-truck" style="margin-left: -1px"></i>
+          <p style="margin-left: -2px">清洗分配</p>
+        </a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <nav class="navbar  navbar-light bg-light border-bottom">
+        <button class="fas fa-align-justify" id="menu-toggle"></button>
+
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" style="color: black;">
+            設定
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="index.html">登出
+              <i class="fa fa-power-off fa-fw pull-right" style="margin-left: 50px; color: #c4c3c3">
+              </i>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <div class="main-content container-fluid">
+        <div class="content-item" style="background-color: #f5f5f5; padding: 20px">
+          <h5 class="h5 content-header">搜尋</h5>
+          <div class="d-flex">
+            <div class="input-group">
+              
+              <input id="tableSearch" type="text" class="form-control"
+                style="width: 10%; margin-right: 15px; border-radius: 3px" aria-label="輸入關鍵字" placeholder="關鍵字" />
+            </div>
+          </div>
+        </div>
+
+        <div class="content-item" style="background-color: white; padding: 20px">
+          <h5 class="h5 content-header">會員使用狀況（月/次）</h5>
+          <!--使用者點狀圖表-->
+          <div id="scatterchart_material" style="width:50%; height: 100%;"></div>
+        </div>
+        <div class="content-item" style="background-color: #f5f5f5; padding: 20px">
+          <h5 class="h5 content-header">會員資料</h5>
+          <div class="d-flex content-subtitle">
+            <label for="recipient-name" class="col-form-label">目前註冊人數：
+              <label style="color: brown;" id="showMemberNum">0
+                <!--要連資料庫--></label>
+            </label>
+          </div>
+          <table class="table table-hover js-memberTable" id="Table_Member">
+          </table>
+        </div>
+        <div class="content-item">
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" style=" font-size: 18px; font-weight: bold;" id="exampleModalLabel">會員編輯</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">會員編號：</label>
+                      <label for="recipient-name" class="col-form-label" id="edit_mid"></label>
+                      <br />
+                      <label for="recipient-name" class="col-form-label">會員信箱：</label>
+                      <label for="recipient-name" class="col-form-label" id="edit_memail"></label>
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">會員姓名：</label>
+                      <input type="text" class="form-control" id="edit_mname" />
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">電話：</label>
+                      <input type="text" class="form-control" id="edit_mphone" />
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">點數：</label>
+                      <!--radio button-->
+                      <div class="form-check">
+                        <input type="radio" name="x" value="先生" /> 加點
+                        <input type="radio" name="x" value="小姐" /> 扣點
+                      </div>
+
+                      <input type="text" class="form-control" style="width: 50%" id="edit_mpoint" />
+                    </div>
+                    <div class="form-group">
+                      <label for="message-text" class="col-form-label">備註:</label>
+
+                      <textarea class="form-control" id="message-text"></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    取消
+                  </button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    onclick="UpdateMember()">確認</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- bootstrap JQ+JS -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/4.2.1/js/bootstrap.bundle.min.js "></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function (e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+
+  <script src="js/index.js"></script>
+
+</body>
+
+</html>

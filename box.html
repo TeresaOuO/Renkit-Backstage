@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--Page title-->
+    <title>RENKiT</title>
+    <!-- RWD -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- bootstrap css -->
+    <link rel="stylesheet" href="vendor/bootstrap/4.2.1/css/bootstrap.min.css" />
+    <!-- font-awesome CDN -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css"
+        integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous" />
+    <!--firebase-->
+    <script src="https://www.gstatic.com/firebasejs/7.19.0/firebase.js"></script>
+    <script type="text/javascript" src="js/firebase.js"></script>
+    <!--Page loading-->
+    <script>
+        window.addEventListener("load", function () { //when page loads
+            initFirebaseModule();//firebase更動
+            getArray();
+            initStoreStatus();
+            initunWash();
+            divideCup();
+        });
+    </script>
+    <!-- Custom styles for this template -->
+    <link href="css/simple-sidebar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/all.css" />
+    <style>
+        .nav a {
+            float: left;
+            font-size: 16px;
+            color: black;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        ul {
+            list-style-type: none;
+            overflow: hidden;
+            font-family: Arial;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body class="wrapper d-grid">
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">Renkit 後台管理</div>
+            <div class="list-group list-group-flush">
+                <a href="member.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                    <p>會員管理</p>
+                  </a>
+                  <a href="store.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fas fa-building" aria-hidden="true"></i>
+                    <p>店家管理</p>
+                  </a>
+                  <a href="cup.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fas fa-coffee" aria-hidden="true" style="margin-left: -4px;"></i>
+                    <p>租賃管理</p>
+                  </a>
+                  <a href="coupon.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fas fa-receipt" aria-hidden="true" style="margin-left: 1px";></i>
+                    <p style="margin-left: 2px">優惠卷管理</p>
+                  </a>
+                  <a href="mission.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fas fa-briefcase" aria-hidden="true"></i>
+                    <p>任務表管理</p>
+                  </a>
+                <a href="distribution.html" class="list-group-item list-group-item-action d-flex">
+                    <i class="fas fa-truck" aria-hidden="true" style="margin-left: -1px"></i>
+                    <p style="margin-left: -2px">清洗分配</p>
+                    <i class="fas fa-angle-down btn" aria-hidden="true" style="color: cornsilk;
+                      position:absolute;
+                      right:0px;
+                      margin-top: -2%;
+                      "></i>
+                    <a href="box.html" class="dropdown-item"  style="padding:9px; background-color: #3b444e">
+                        <p style="margin-left: 40px; color:#f5f5f5">封箱管理</p>
+                    </a>
+                      
+                </a>
+            </div>
+        </div>
+        <!-- /#sidebar-wrapper -->
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-light bg-light border-bottom">
+                <button class="fas fa-align-justify" id="menu-toggle"></button>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: black;">
+                        設定
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="index.html">登出
+                            <i class="fa fa-power-off fa-fw pull-right" style="margin-left: 50px; color: #c4c3c3">
+                            </i>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <div class="main-content container-fluid">
+                <div class="content-item" style="background-color: #f5f5f5; padding: 20px">
+                    <h5 class="h5 content-header">搜尋</h5>
+                    <div class="d-flex">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        
+                    </div>
+                </div>
+                <!--<ul class="nav nav-tabs">
+                    <li ><a data-toggle="tab" href="#store_status">店家狀態</a></li>
+                    <li><a data-toggle="tab" href="#washed">已清洗</a></li>
+                    <li><a data-toggle="tab" href="#nowash">未清洗</a></li>
+                    </ul>-->
+                    
+                <nav class="navbar navbar-expand-sm navbar-light bg-light"
+                    style="flex-direction: column;align-items: stretch;">
+                    <h5 class="h5 content-header" style="margin-top: 12px;">清洗狀態</h5>
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#washed">已清洗</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#nowash">未清洗</a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="tab-content">
+                    <div id="washed" class="tab-pane active">
+                        <p></p>
+                        <table class="table table-hover js-washedTable" id="Table_washed">
+                        </table>
+                    </div>
+                    <div id="nowash" class="tab-pane fade">
+                        <p></p>
+                        <table class="table table-hover js-unwashTable" id="Table_unwash">
+                        </table>
+                    </div>
+                </div>
+
+                <!-- <div class="tab-content">
+
+                    <div id="washed" class="tab-pane  acitve ">
+                        <br /><br />
+                        <h3>杯子分發</h3>
+                        <p></p>
+                        <table class="table table-hover js-washedTable" id="Table_washed">
+                        </table>
+                    </div>
+                    <div id="nowash" class="tab-pane fade">
+                        <br /><br />
+                        <h3>杯子待清洗</h3>
+                        <p></p>
+                        <table class="table table-hover js-unwashTable" id="Table_unwash">
+                        </table>
+                    </div>-->
+                <!------------分配視窗--------------->
+                <div class="modal fade" id="divideModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" style="font-size: 18px; font-weight: bold;">選擇分派店家</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="form-group" style="padding: 20px;">
+                                <label for="recipient-name" class="col-form-label">存放店家名稱：</label>
+                                <br />
+                                <select  id="divide-store-list" onchange="BoxUpdate(this.selectedIndex,3)"  ><option disabled value="">用戶身份</option></select>
+                            </div>
+                            <!--<div class="modal-body">
+                                <p id="delete_storeid"></p>
+                                <label for="recipient-name" id="delete_store"></label>
+                                <h4>確認清洗完畢?</h4>
+                            </div>-->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="BoxUpdate('none',2)">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!------------清洗警示窗--------------->
+                <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel"
+                                    style="font-size: 18px; font-weight: bold;">清洗狀態</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="delete_storeid"></p>
+                                <label for="recipient-name" id="delete_store"></label>
+                                <h4>確認清洗完畢?</h4>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="BoxClear('none',2)">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--</div>-->
+            </div>
+        </div>
+
+        <!-- bootstrap JQ+JS -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/4.2.1/js/bootstrap.bundle.min.js "></script>
+        <!--Menu Toggle Script -->
+        <script>
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+        </script>
+</body>
+
+</html>
